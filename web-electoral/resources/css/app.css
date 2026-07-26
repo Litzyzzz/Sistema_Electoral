@@ -1,0 +1,10 @@
+/*aqui se importan los demas diseños*/
+@import url('https://fonts.googleapis.com/css2?family=Prosto+One&display=swap');
+
+@import 'vistas/inicio.css';
+@import 'partials/progreso.css';
+@import 'vistas/identificación.css';
+
+* {
+    font-family: 'Prosto One', cursive, sans-serif;
+}

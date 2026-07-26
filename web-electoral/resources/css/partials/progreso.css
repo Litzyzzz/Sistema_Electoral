@@ -1,0 +1,143 @@
+
+.steps-container {
+    background: #ffffff;
+    border-bottom: 3px solid #e0e0e0;
+    padding: 15px 0 5px 0; 
+
+}
+
+.steps-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.steps-header {
+    text-align: center;
+    margin-bottom: 8px; 
+
+}
+
+.tse-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.tse-icon {
+    font-size: 28px;
+}
+
+.tse-text {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+}
+
+.tse-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a237e;
+    letter-spacing: 2px;
+}
+
+.tse-subtitle {
+    font-size: 16px;
+    font-weight: 600;
+    color: #000000;
+    padding: 2px 16px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+}
+.steps-progress {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.step-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: default;
+    position: relative;
+}
+
+.step-circle {
+    width: 42px;
+    height: 42px;
+    border-radius: 4px;
+    background: #e0e0e0;
+    color: #999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+    transition: all 0.4s ease;
+    border: 3px solid #e0e0e0;
+    font-family: 'Prosto One', cursive, sans-serif;
+}
+
+.step-item.active .step-circle {
+    background: #1a237e;
+    color: #ffffff;
+    border-color: #1a237e;
+    transform: scale(1.1);
+
+}
+
+.step-item.completed .step-circle {
+    background: #0C0076;
+    color: #ffffff;
+    border-color: #0C0076;
+}
+
+.step-check {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.step-number {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.step-label {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #999;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    letter-spacing: 0.5px;
+    font-family: 'Prosto One', cursive, sans-serif;
+}
+
+.step-item.active .step-label {
+    color: #1a237e;
+    font-weight: 700;
+}
+
+.step-item.completed .step-label {
+    color: #0C0076;
+    font-weight: 600;
+}
+
+.step-line {
+    flex: 1;
+    height: 3px;
+    background: #e0e0e0;
+    margin: 0 8px;
+    max-width: 80px;
+    min-width: 30px;
+    transition: all 0.5s ease;
+    position: relative;
+    top: -18px;
+    border-radius: 4px;
+}
+
+.step-line.active {
+    background: linear-gradient(90deg, #1a237e, #000000);
+}
