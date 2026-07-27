@@ -10,9 +10,13 @@ instrucciones:
 instalar en la terminal
 
 composer install
+
 npm install
+
 cp .env.example .env 
+
 php artisan key:generate -->es una llave que genera la APP_KEY que laravel usa 
+
 php artisan migrate --> este les crea todas las tablas ya hechas en laravel y las pasa al mysql
 
 luego hacen en otra terminal:
