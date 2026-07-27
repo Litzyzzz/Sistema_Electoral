@@ -1,5 +1,7 @@
 **Deben tener composer y mysql instalado**
+
 **Recordar siempre verificar el .env tenga las credenciales y conexión a mysql y la base de datos**
+
 **Deben al menos tener creado en mysql la base de datos yo la nombré: bd_votaciones**
 
 
