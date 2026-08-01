@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\Votante;
 use App\Models\Partido;
 use App\Models\Voto;
-use Illuminate\Support\Facades\Auth;
 
 class VotacionController extends Controller
 {
@@ -161,6 +160,15 @@ class VotacionController extends Controller
     public function finalizacion()
     {
         return view('finalizado');
+    }
+
+    public function cerrarFlujo(Request $request)
+    {
+        $request->session()->forget(['id_votante', 'voto_realizado']);
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return response()->json(['ok' => true]);
     }
 
 }
