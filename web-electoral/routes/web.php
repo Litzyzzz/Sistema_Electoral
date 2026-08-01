@@ -31,6 +31,9 @@ Route::post('/votar', [VotacionController::class, 'guardarVoto'])
 Route::get('/finalizacion', [VotacionController::class, 'finalizacion'])
     ->name('finalizacion');    
 
+Route::post('/finalizacion/cerrar', [VotacionController::class, 'cerrarFlujo'])
+    ->name('finalizacion.cerrar');
+
 
 
     
