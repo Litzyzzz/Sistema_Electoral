@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('votantes', function (Blueprint $table) {
             $table->id('id_votante');
-            $table->string('dui', 10)->unique();
+            $table->string('codigo_estudiante', 20)->unique();
             $table->string('nombres', 50);
             $table->string('apellidos', 50);
             $table->boolean('ha_votado')->default(false);

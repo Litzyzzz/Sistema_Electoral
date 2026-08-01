@@ -11,7 +11,7 @@ class Votante extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'dui',
+        'codigo_estudiante',
         'nombres',
         'apellidos',
         'ha_votado',

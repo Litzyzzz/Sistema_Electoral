@@ -33,15 +33,15 @@
         @csrf
         
         <div class="campo">
-            <label for="dui">Documento Único de Identidad (DUI)</label>
+            <label for="codigo_estudiante">Código de Estudiante</label>
             <input type="text" 
-                   id="dui" 
-                   name="dui" 
-                   placeholder="00000000-0"
-                   value="{{ old('dui') }}"
-                   maxlength="10"
+                   id="codigo_estudiante" 
+                   name="codigo_estudiante" 
+                   placeholder="Ej: EST-001"
+                   value="{{ old('codigo_estudiante') }}"
+                   maxlength="20"
                    required>
-            @error('dui')
+            @error('codigo_estudiante')
                 <div class="text-danger" style="color: #6b6cad">{{ $message }}</div>
             @enderror
         </div>
