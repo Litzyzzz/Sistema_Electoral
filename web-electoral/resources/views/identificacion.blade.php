@@ -29,6 +29,17 @@
         </div>
     @endif
 
+    @if($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-bottom: 20px;">
+            <strong>Error:</strong>
+            <ul style="margin: 8px 0 0 20px;">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <form class="formulario" method="POST" action="{{ route('verificar.dui.post') }}">
         @csrf
         

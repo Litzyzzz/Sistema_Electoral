@@ -52,6 +52,44 @@
 .btn-primary:active {
     transform: translateY(0px) scale(0.98);
 }
+
+.inicio-container {
+    position: relative;
+    min-height: calc(100vh - 170px);
+}
+
+.btn-resultados-acceso {
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 14px;
+    font-size: 12px;
+    letter-spacing: 0.4px;
+    text-decoration: none;
+    color: #103a8e;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(16, 58, 142, 0.26);
+    border-radius: 999px;
+    box-shadow: 0 4px 16px rgba(8, 33, 91, 0.14);
+    backdrop-filter: blur(3px);
+    transition: all 0.2s ease;
+    z-index: 20;
+}
+
+.btn-resultados-acceso:hover {
+    color: #ffffff;
+    background: #0c3f9a;
+    border-color: #0c3f9a;
+    transform: translateY(-1px);
+}
+
+.btn-resultados-acceso:active {
+    transform: translateY(0);
+}
+
 @media (max-width: 768px) {
     .container {
         padding: 40px 20px;
@@ -66,6 +104,13 @@
         font-size: 18px;
         width: 100%;
         max-width: 300px;
+    }
+
+    .btn-resultados-acceso {
+        right: 14px;
+        bottom: 14px;
+        padding: 7px 12px;
+        font-size: 11px;
     }
 }
 

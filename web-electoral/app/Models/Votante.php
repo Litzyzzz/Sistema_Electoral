@@ -15,6 +15,7 @@ class Votante extends Model
         'nombres',
         'apellidos',
         'ha_votado',
-        'fecha_voto'
+        'fecha_voto',
+        'puede_ver_resultados'
     ];
 }

@@ -21,50 +21,50 @@ class VotacionController extends Controller
 
     public function verificarDui(Request $request)
     {
-        // validaciones de los campos
+        $codigoValue = $request->input('codigo_estudiante', $request->input('dui'));
+        $request->merge(['codigo_estudiante' => $codigoValue]);
+
         $request->validate([
-            'codigo_estudiante' => 'required|string|max:20',
+            'codigo_estudiante' => ['required', 'string', 'max:20'],
             'nombres' => 'required|string|max:50',
             'apellidos' => 'required|string|max:50'
-        ],
-        // otras validaciones    
-        [
-            'codigo_estudiante.required' => 'El campo Código de Estudiante es obligatorio',
-            'codigo_estudiante.max' => 'El Código de Estudiante no puede tener más de 20 caracteres',
+        ], [
+            'codigo_estudiante.required' => 'El campo código de estudiante es obligatorio',
+            'codigo_estudiante.string' => 'El código de estudiante debe ser texto',
+            'codigo_estudiante.max' => 'El código de estudiante no puede tener más de 20 caracteres',
             'nombres.required' => 'El campo nombres es obligatorio',
             'nombres.max' => 'Los nombres no pueden tener más de 50 caracteres',
             'apellidos.required' => 'El campo apellidos es obligatorio',
             'apellidos.max' => 'Los apellidos no pueden tener más de 50 caracteres',
         ]);
 
-        // busca al votante en la base de datos por su código de estudiante
-        $votante = Votante::where('codigo_estudiante', $request->codigo_estudiante)->first();
+        $codigo = trim((string) $request->input('codigo_estudiante'));
+        $nombres = trim($request->input('nombres'));
+        $apellidos = trim($request->input('apellidos'));
 
-        // validación: verifica si el código de estudiante existe en la base de datos
-        if (!$votante) {
-            return back()->withInput()->with('error', 'El código de estudiante no se encuentra registrado en la base de datos.');
+        $votante = Votante::query()
+            ->where('codigo_estudiante', $codigo)
+            ->first();
+
+        if ($votante && $votante->ha_votado) {
+            return back()->with('error', 'Esta persona ya emitió su voto.');
         }
 
-        // validación: verifica que los nombres y apellidos coincidan con los registrados para ese código
-        $nombresIngresados = mb_strtolower(trim($request->nombres));
-        $apellidosIngresados = mb_strtolower(trim($request->apellidos));
-
-        $nombresBD = mb_strtolower(trim($votante->nombres));
-        $apellidosBD = mb_strtolower(trim($votante->apellidos));
-
-        if ($nombresIngresados !== $nombresBD || $apellidosIngresados !== $apellidosBD) {
-            return back()->withInput()->with('error', 'Los nombres o apellidos no coinciden con los registrados para este código de estudiante.');
+        if ($votante) {
+            $votante->nombres = $nombres ?: $votante->nombres;
+            $votante->apellidos = $apellidos ?: $votante->apellidos;
+            $votante->save();
+        } else {
+            $votante = Votante::create([
+                'codigo_estudiante' => $codigo,
+                'nombres' => $nombres,
+                'apellidos' => $apellidos,
+                'ha_votado' => false,
+                'puede_ver_resultados' => false,
+            ]);
         }
 
-        // verifica si la persona ya votó
-        if ($votante->ha_votado) {
-            return back()->withInput()->with('error', 'Esta persona ya emitió su voto.');
-        }
-
-        // la guarda en sesión
         session(['id_votante' => $votante->id_votante]);
-
-        // elimina cualquier voto previo en sesión
         session()->forget('voto_realizado');
 
         return redirect()->route('votacion')->with('success', 'Identidad verificada.');
