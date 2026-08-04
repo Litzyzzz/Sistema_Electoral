@@ -19,22 +19,44 @@ class ResultadosController extends Controller
 
     public function authenticate(Request $request): RedirectResponse
     {
-        $request->validate([
-            'codigo_estudiante' => ['required', 'string', 'max:20'],
-            'nombres' => ['required', 'string', 'max:50'],
-            'apellidos' => ['required', 'string', 'max:50'],
+        $codigoValue = trim((string) $request->input('codigo_estudiante'));
+        $nombresValue = preg_replace('/\s+/', ' ', trim((string) $request->input('nombres')));
+        $apellidosValue = preg_replace('/\s+/', ' ', trim((string) $request->input('apellidos')));
+
+        $request->merge([
+            'codigo_estudiante' => $codigoValue,
+            'nombres' => $nombresValue,
+            'apellidos' => $apellidosValue,
         ]);
 
-        $codigo = trim($request->input('codigo_estudiante'));
-        $nombres = trim($request->input('nombres'));
-        $apellidos = trim($request->input('apellidos'));
+        $request->validate([
+            'codigo_estudiante' => ['required', 'string', 'max:20'],
+            'nombres' => ['required', 'string', 'max:50', 'regex:/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+(?:\s[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)+$/u'],
+            'apellidos' => ['required', 'string', 'max:50', 'regex:/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+(?:\s[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)+$/u'],
+        ], [
+            'nombres.regex' => 'Ingrese nombres completos (mínimo dos palabras) y con la primera letra de cada palabra en mayúscula.',
+            'apellidos.regex' => 'Ingrese apellidos completos (mínimo dos palabras) y con la primera letra de cada palabra en mayúscula.',
+        ]);
+
+        $codigo = $request->input('codigo_estudiante');
+        $nombres = $request->input('nombres');
+        $apellidos = $request->input('apellidos');
 
         $votante = Votante::query()
             ->where('codigo_estudiante', $codigo)
-            ->where('nombres', $nombres)
-            ->where('apellidos', $apellidos)
             ->where('puede_ver_resultados', true)
             ->first();
+
+        if ($votante) {
+            $nombresInputComparable = mb_strtolower($nombres, 'UTF-8');
+            $apellidosInputComparable = mb_strtolower($apellidos, 'UTF-8');
+            $nombresStoredComparable = mb_strtolower(preg_replace('/\s+/', ' ', trim((string) $votante->nombres)), 'UTF-8');
+            $apellidosStoredComparable = mb_strtolower(preg_replace('/\s+/', ' ', trim((string) $votante->apellidos)), 'UTF-8');
+
+            if ($nombresInputComparable !== $nombresStoredComparable || $apellidosInputComparable !== $apellidosStoredComparable) {
+                $votante = null;
+            }
+        }
 
         if (!$votante) {
             return back()
@@ -42,9 +64,9 @@ class ResultadosController extends Controller
                 ->with('error', 'Credenciales incorrectas');
         }
 
+        $request->session()->regenerate();
         $request->session()->put('resultados_auth', true);
         $request->session()->put('resultados_votante_id', $votante->id_votante);
-        $request->session()->regenerate();
 
         return redirect()->route('resultados.dashboard');
     }
@@ -67,23 +89,28 @@ class ResultadosController extends Controller
 
     public function rostro(): View
     {
-        $data = $this->buildResultadosData();
+        $data = $this->buildResultadosData('rostro');
 
         return view('resultados.rostro', $data);
     }
 
     public function bandera(): View
     {
-        $data = $this->buildResultadosData();
+        $data = $this->buildResultadosData('bandera');
 
         return view('resultados.bandera', $data);
     }
 
-    private function buildResultadosData(): array
+    private function buildResultadosData(?string $tipoVista = null): array
     {
         $authVotante = Votante::query()->find(session('resultados_votante_id'));
 
-        $totalVotos = Voto::query()->count();
+        $votosQuery = Voto::query();
+        if ($tipoVista !== null) {
+            $votosQuery->where('tipo_vista', $tipoVista);
+        }
+
+        $totalVotos = (clone $votosQuery)->count();
         $totalVotantes = Votante::query()->count();
         $totalCandidatos = Partido::query()->count();
 
@@ -92,7 +119,13 @@ class ResultadosController extends Controller
             : 0;
 
         $ranking = Partido::query()
-            ->leftJoin('votos', 'partidos.id_partido', '=', 'votos.id_partido')
+            ->leftJoin('votos', function ($join) use ($tipoVista) {
+                $join->on('partidos.id_partido', '=', 'votos.id_partido');
+
+                if ($tipoVista !== null) {
+                    $join->where('votos.tipo_vista', '=', $tipoVista);
+                }
+            })
             ->select(
                 'partidos.id_partido',
                 'partidos.nombre_partido',

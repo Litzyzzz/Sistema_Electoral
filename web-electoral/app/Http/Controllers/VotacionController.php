@@ -22,25 +22,34 @@ class VotacionController extends Controller
     public function verificarDui(Request $request)
     {
         $codigoValue = $request->input('codigo_estudiante', $request->input('dui'));
-        $request->merge(['codigo_estudiante' => $codigoValue]);
+        $nombresValue = preg_replace('/\s+/', ' ', trim((string) $request->input('nombres')));
+        $apellidosValue = preg_replace('/\s+/', ' ', trim((string) $request->input('apellidos')));
+
+        $request->merge([
+            'codigo_estudiante' => trim((string) $codigoValue),
+            'nombres' => $nombresValue,
+            'apellidos' => $apellidosValue,
+        ]);
 
         $request->validate([
             'codigo_estudiante' => ['required', 'string', 'max:20'],
-            'nombres' => 'required|string|max:50',
-            'apellidos' => 'required|string|max:50'
+            'nombres' => ['required', 'string', 'max:50', 'regex:/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+(?:\s[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)+$/u'],
+            'apellidos' => ['required', 'string', 'max:50', 'regex:/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+(?:\s[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)+$/u']
         ], [
             'codigo_estudiante.required' => 'El campo código de estudiante es obligatorio',
             'codigo_estudiante.string' => 'El código de estudiante debe ser texto',
             'codigo_estudiante.max' => 'El código de estudiante no puede tener más de 20 caracteres',
             'nombres.required' => 'El campo nombres es obligatorio',
             'nombres.max' => 'Los nombres no pueden tener más de 50 caracteres',
+            'nombres.regex' => 'Ingrese nombres completos (mínimo dos palabras) y con la primera letra de cada palabra en mayúscula.',
             'apellidos.required' => 'El campo apellidos es obligatorio',
             'apellidos.max' => 'Los apellidos no pueden tener más de 50 caracteres',
+            'apellidos.regex' => 'Ingrese apellidos completos (mínimo dos palabras) y con la primera letra de cada palabra en mayúscula.',
         ]);
 
-        $codigo = trim((string) $request->input('codigo_estudiante'));
-        $nombres = trim($request->input('nombres'));
-        $apellidos = trim($request->input('apellidos'));
+        $codigo = $request->input('codigo_estudiante');
+        $nombres = $request->input('nombres');
+        $apellidos = $request->input('apellidos');
 
         $votante = Votante::query()
             ->where('codigo_estudiante', $codigo)
@@ -165,8 +174,6 @@ class VotacionController extends Controller
     public function cerrarFlujo(Request $request)
     {
         $request->session()->forget(['id_votante', 'voto_realizado']);
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
 
         return response()->json(['ok' => true]);
     }

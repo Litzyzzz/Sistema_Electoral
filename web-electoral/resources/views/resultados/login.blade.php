@@ -41,6 +41,8 @@
                     value="{{ old('nombres') }}"
                     maxlength="50"
                     placeholder="Ej. Ramon Antonio"
+                    pattern="[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+(?: [A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)+"
+                    title="Ingrese nombres completos (mínimo dos palabras) con la primera letra de cada palabra en mayúscula. Ejemplo: Ramon Antonio"
                     required
                 >
                 @error('nombres')
@@ -57,6 +59,8 @@
                     value="{{ old('apellidos') }}"
                     maxlength="50"
                     placeholder="Ej. Bukele Maduro"
+                    pattern="[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+(?: [A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)+"
+                    title="Ingrese apellidos completos (mínimo dos palabras) con la primera letra de cada palabra en mayúscula. Ejemplo: Bukele Maduro"
                     required
                 >
                 @error('apellidos')

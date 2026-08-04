@@ -64,6 +64,8 @@
                    name="nombres" 
                    placeholder="Juan Antonio"
                    value="{{ old('nombres') }}"
+                   pattern="[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+(?: [A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)+"
+                   title="Ingrese nombres completos (mínimo dos palabras) con la primera letra de cada palabra en mayúscula. Ejemplo: Juan Antonio"
                    required>
             @error('nombres')
                 <div class="text-danger" style="color: white">{{ $message }}</div>
@@ -77,6 +79,8 @@
                    name="apellidos" 
                    placeholder="Pérez Molina"
                    value="{{ old('apellidos') }}"
+                   pattern="[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+(?: [A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)+"
+                   title="Ingrese apellidos completos (mínimo dos palabras) con la primera letra de cada palabra en mayúscula. Ejemplo: Pérez Molina"
                    required>
             @error('apellidos')
                 <div class="text-danger" style="color: white">{{ $message }}</div>

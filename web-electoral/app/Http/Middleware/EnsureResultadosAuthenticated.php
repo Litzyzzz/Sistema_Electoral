@@ -10,10 +10,17 @@ class EnsureResultadosAuthenticated
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (!$request->session()->get('resultados_auth')) {
+        $isAuthenticated = (bool) $request->session()->get('resultados_auth', false);
+        $hasVotanteId = $request->session()->has('resultados_votante_id');
+
+        if (!$isAuthenticated && !$hasVotanteId) {
             return redirect()
                 ->route('resultados.login')
                 ->with('error', 'Debe autenticarse para consultar los resultados.');
+        }
+
+        if (!$isAuthenticated && $hasVotanteId) {
+            $request->session()->put('resultados_auth', true);
         }
 
         $response = $next($request);
