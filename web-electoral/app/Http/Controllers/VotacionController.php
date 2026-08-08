@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Votante;
 use App\Models\Partido;
 use App\Models\Voto;
+use App\Models\Eleccion2026;
 
 class VotacionController extends Controller
 {
@@ -16,6 +17,14 @@ class VotacionController extends Controller
 
     public function identificacion()
     {
+        $eleccion = Eleccion2026::first();
+
+        // Si las elecciones ya terminaron
+        if (!$eleccion || $eleccion->estado === 'cerrada') {
+            return view('layouts.no-pasar', compact('eleccion'));
+        }
+
+        // Si las elecciones siguen activas
         return view('identificacion');
     }
 
@@ -124,6 +133,18 @@ class VotacionController extends Controller
         // este verifica que el votante este "autenticado/puesto los datos"
         if (!session()->has('id_votante')) {
             return redirect()->route('identificacion')->with('error', 'Debe identificarse primero.');
+
+        }
+        // este verifica que las elecciones esten activas
+        $eleccion = Eleccion2026::first();
+        if (
+            !$eleccion ||
+            $eleccion->estado !== 'activa' ||
+            now()->greaterThanOrEqualTo($eleccion->fecha_fin)
+        ) {
+            return redirect()
+                ->route('inicio')
+                ->with('error', 'Las elecciones han finalizado');
         }
 
         // aqui verifica que el votante no haya votado ya
@@ -155,10 +176,14 @@ class VotacionController extends Controller
 
             DB::commit();
 
-            // limpia la sesion
-            session()->forget(['id_votante', 'voto_realizado']);
+            // Marca que el votante acaba de finalizar su votación
+            session()->put('voto_realizado', true);
 
-            return redirect()->route('finalizacion')->with('success', '¡Tu voto ha sido registrado exitosamente!');
+            // Ya no necesitamos el ID del votante
+            session()->forget('id_votante');
+
+            return redirect()->route('finalizacion')
+                ->with('success', '¡Tu voto ha sido registrado exitosamente!');
 
         } catch (\Exception $e) {
             DB::rollBack();

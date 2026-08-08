@@ -48,7 +48,7 @@
             <input type="text" 
                    id="codigo_estudiante" 
                    name="codigo_estudiante" 
-                   placeholder="Ej: EST-001"
+                   placeholder="Ej: SMSS000000"
                    value="{{ old('codigo_estudiante') }}"
                    maxlength="20"
                    required>

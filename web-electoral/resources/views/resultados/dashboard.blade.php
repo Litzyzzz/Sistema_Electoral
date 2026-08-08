@@ -24,31 +24,19 @@
                         Por bandera
                     </a>
                 </nav>
-
                 <div class="panel-logout">
-                    <form method="POST" action="{{ route('resultados.logout') }}">
-                        @csrf
-                        <button type="submit">
-                            <i class="bi bi-box-arrow-left"></i>
-                            Cerrar sesión
-                        </button>
-                    </form>
+                    <a href="{{ route('inicio') }}"
+                    class="btn btn-light btn-sm w-100 d-flex align-items-center justify-content-center gap-2 text-primary fw-semibold shadow-sm">
+                        <i class="bi bi-house-fill"></i>
+                        <span>Regresar</span>
+                    </a>
                 </div>
             </aside>
+
 
             <div class="panel-content">
                 <header class="panel-topbar">
                     <h1 class="panel-title">Dashboard de Resultados</h1>
-
-                    @if($authVotante)
-                        <div class="panel-user">
-                            <i class="bi bi-person"></i>
-                            <div>
-                                <p class="panel-user-name">{{ $authVotante->nombres }} {{ $authVotante->apellidos }}</p>
-                                <p class="panel-user-code">{{ $authVotante->codigo_estudiante }}</p>
-                            </div>
-                        </div>
-                    @endif
                 </header>
 
                 <main class="panel-body">

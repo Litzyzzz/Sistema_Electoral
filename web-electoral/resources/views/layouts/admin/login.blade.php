@@ -9,11 +9,11 @@
             <div class="auth-icon">
                 <i class="bi bi-lock-fill"></i>
             </div>
-            <h1 class="auth-title">Acceso a Resultados</h1>
-            <p class="auth-subtitle">Ingrese sus credenciales para ver las estadísticas de la elección.</p>
+            <h1 class="auth-title">Acceso a control de elecciones</h1>
+            <p class="auth-subtitle">Ingrese sus credenciales para acceder al control de elecciones.</p>
         </div>
 
-        <form method="POST" action="{{ route('resultados.authenticate') }}">
+        <form method="POST" action="{{ route('admin.authenticate') }}">
             @csrf
 
             <div class="auth-field">

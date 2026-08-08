@@ -4,6 +4,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VotacionController;
 use App\Http\Controllers\ResultadosController;
 use App\Http\Middleware\EnsureResultadosAuthenticated;
+use App\Http\Controllers\EleccionController;
+use App\Http\Controllers\AdminController;
+use App\Http\Middleware\EnsureEleccionCerrada;
+use App\Http\middleware\EnsureVotacionFinalizada;
 
 Route::redirect('/', '/inicio');
 
@@ -32,22 +36,16 @@ Route::post('/guardar-voto', [VotacionController::class, 'guardarVoto'])->name('
 Route::post('/votar', [VotacionController::class, 'guardarVoto'])
     ->name('guardar.voto');
 
-Route::get('/finalizacion', [VotacionController::class, 'finalizacion'])
-    ->name('finalizacion');    
+Route::middleware(EnsureVotacionFinalizada::class)->group(function () {
+    Route::get('/finalizacion', [VotacionController::class, 'finalizacion'])
+        ->name('finalizacion');
+
+}); 
 
 Route::post('/finalizacion/cerrar', [VotacionController::class, 'cerrarFlujo'])
     ->name('finalizacion.cerrar');
 
-Route::get('/resultados/login', [ResultadosController::class, 'showLogin'])
-    ->name('resultados.login');
-
-Route::post('/resultados/login', [ResultadosController::class, 'authenticate'])
-    ->name('resultados.authenticate');
-
-Route::post('/resultados/logout', [ResultadosController::class, 'logout'])
-    ->name('resultados.logout');
-
-Route::middleware(EnsureResultadosAuthenticated::class)->group(function () {
+Route::middleware(EnsureEleccionCerrada::class)->group(function () {
     Route::get('/resultados', [ResultadosController::class, 'dashboard'])
         ->name('resultados.dashboard');
 
@@ -56,6 +54,27 @@ Route::middleware(EnsureResultadosAuthenticated::class)->group(function () {
 
     Route::get('/resultados/bandera', [ResultadosController::class, 'bandera'])
         ->name('resultados.bandera');
+
+});
+
+
+Route::get('/admin/login', [AdminController::class, 'showLogin'])
+    ->name('admin.login');
+
+Route::post('/admin/login', [AdminController::class, 'authenticate'])
+    ->name('admin.authenticate');
+
+Route::post('/admin/logout', [AdminController::class, 'logout'])
+    ->name('admin.logout');
+
+Route::middleware(EnsureResultadosAuthenticated::class)->group(function () {
+        Route::get('/admin/control', [AdminController::class, 'control'])
+        ->name('admin.control');
+            Route::post('/admin/elecciones/{eleccion}/iniciar',[EleccionController::class, 'iniciar'])
+        ->name('admin.iniciar-elecciones');
+        Route::post('/admin/elecciones/{eleccion}/cerrar',[EleccionController::class, 'cerrarManual'])
+        ->name('admin.elecciones.cerrar');
+        
 });
 
 

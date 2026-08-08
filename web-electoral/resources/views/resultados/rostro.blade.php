@@ -24,15 +24,12 @@
                         Por bandera
                     </a>
                 </nav>
-
                 <div class="panel-logout">
-                    <form method="POST" action="{{ route('resultados.logout') }}">
-                        @csrf
-                        <button type="submit">
-                            <i class="bi bi-box-arrow-left"></i>
-                            Cerrar sesión
-                        </button>
-                    </form>
+                    <a href="{{ route('inicio') }}"
+                    class="btn btn-light btn-sm w-100 d-flex align-items-center justify-content-center gap-2 text-primary fw-semibold shadow-sm">
+                        <i class="bi bi-house-fill"></i>
+                        <span>Regresar</span>
+                    </a>
                 </div>
             </aside>
 
@@ -54,19 +51,21 @@
                 <main class="panel-body">
                     <p class="card-subtitle">Ordenado de mayor a menor según la cantidad de votos</p>
 
-                    <section class="results-grid">
+                    <section class="results-grid" >
                         @foreach($ranking as $index => $candidato)
-                            <article class="result-card">
-                                <div class="result-image-wrap">
+                            <article class="result-card" >
+                                <div class="result-image-wrap" >
+                            
                                     <img
                                         class="result-image"
+                                        style="height: 210px; object-fit: contain; width: 100%; background-color: #0C0076;"
                                         src="{{ asset('img/candidatos/' . $candidato->rostro_candidato) }}"
                                         alt="{{ $candidato->nombre_candidato }}"
                                     >
                                     <span class="result-rank rank-{{ min($index + 1, 3) }}">{{ $index + 1 }}</span>
                                 </div>
 
-                                <div class="result-info">
+                                <div class="result-info" >
                                     <h2 class="result-name">{{ $candidato->nombre_candidato }}</h2>
                                     <p class="result-party">{{ $candidato->nombre_partido }}</p>
                                     <span class="result-votes">{{ number_format($candidato->total_votos) }} votos</span>

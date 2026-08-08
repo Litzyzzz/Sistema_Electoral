@@ -11,7 +11,7 @@
             @if($partido->rostro_candidato)
                 <img src="{{ asset('img/candidatos/' . $partido->rostro_candidato) }}" 
                      class="card-img-top" 
-                     style="height: 250px; object-fit: cover; width: 100%;" 
+                     style="height: 210px; object-fit: contain; width: 100%; background-color: white;" 
                      alt="{{ $partido->nombre_candidato }}">
             @endif
             

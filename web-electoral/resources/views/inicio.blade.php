@@ -9,7 +9,7 @@
             Comenzar
         </a>
 
-        <a href="{{ route('resultados.login') }}" class="btn-resultados-acceso" aria-label="Ver resultados">
+        <a href="{{ route('resultados.dashboard') }}" class="btn-resultados-acceso" aria-label="Ver resultados">
             Ver resultados
         </a>
     </div>
